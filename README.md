@@ -7,6 +7,8 @@ Primarily this Repository has some cool scripts that are generally very useful w
 
 Hope this helps anyone and everyone as it helps me in my daily life.
 
+PS: I have referred to various websites to pull together this list. I do not own the credits / rights for everything I have in this repo.
+
 Thanks,
 Happy Coding!!!
 
