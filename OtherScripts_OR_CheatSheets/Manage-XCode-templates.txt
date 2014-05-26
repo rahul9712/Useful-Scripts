@@ -1,0 +1,18 @@
+Change XCode Default template:
+
+In xcode 5.0.1 and above:
+
+	1.Go->Applications
+	2.right click "xcode" application
+	3.chose "Show Package Contents"
+	4.contents/Developer/Library/Xcode/Templates
+
+In Previous XCode:
+	1. File templates: ~/Library/Application Support/Developer/Shared/Xcode/File Templates/
+	2. Target templates: ~/Library/Application Support/Developer/Shared/Xcode/Target Templates/
+	3. Project templates: ~/Library/Application Support/Developer/Shared/Xcode/Project Templates/
+
+
+If you want to change default Organization Name, you can use following command for that:
+	defaults write com.apple.Xcode PBXCustomTemplateMacroDefinitions '{ "ORGANIZATIONNAME" = "NewCompanyName";}'
+
