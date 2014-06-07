@@ -6,8 +6,9 @@
  * 
  * This script the best with Mac, Have not really tried it against Windows / UNIX or any other systems.
  *
- *
  * These changes are not managed and maintained regularly, so this might not work some time.
+ *
+ * If, folder you provided does not exist, then the download will occur at current folder
  *
  */
  
