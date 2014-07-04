@@ -39,6 +39,7 @@
 	} else {
 		// Clear the text view
 		[self.linksListTextView setString:@""];
+		BOOL foundURL = NO;
 		
 		NSURL *url = [NSURL URLWithString:self.urlTextField.stringValue];
 		NSString *webDataString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
@@ -57,31 +58,64 @@
 		NSMutableArray *aPDFList = [NSMutableArray array];
 		
 		for (NSTextCheckingResult *match in matches) {
+			foundURL = YES;
 			NSRange range = [match rangeAtIndex:1];
 			NSString *aURLString = [webDataString substringWithRange:range];
 			aURLString = [aURLString substringToIndex:(aURLString.length - 1)];
 			
-			if ([aURLString containsString:@"_hd"]) {
+			if ([aURLString containsString:@"_hd"] || [aURLString containsString:@"-hd"]) {
 				[aHDList addObject:aURLString];
-			} else if ([aURLString containsString:@"_sd"]) {
+			} else if ([aURLString containsString:@"_sd"] || [aURLString containsString:@"-sd"]) {
 				[aSDList addObject:aURLString];
 			} else if ([aURLString containsString:@"pdf"]) {
 				[aPDFList addObject:aURLString];
 			}
 		}
 		
-		// Now Loop through all the list and print them in the text view
-		[self.linksListTextView insertText:@"\n\nHD List"];
-		for (NSString* aLink in aHDList) {
-			[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
-		}
-		[self.linksListTextView insertText:@"\n\nSD List"];
-		for (NSString* aLink in aSDList) {
-			[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
-		}
-		[self.linksListTextView insertText:@"\n\nPDF List"];
-		for (NSString* aLink in aPDFList) {
-			[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
+		if (foundURL) {
+			// Now Loop through all the list and print them in the text view
+			[self.linksListTextView insertText:@"\n\nHD List"];
+			for (NSString* aLink in aHDList) {
+				[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
+			}
+			[self.linksListTextView insertText:@"\n\nSD List"];
+			for (NSString* aLink in aSDList) {
+				[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
+			}
+			[self.linksListTextView insertText:@"\n\nPDF List"];
+			for (NSString* aLink in aPDFList) {
+				[self.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]];
+			}
+		} else {
+			pattern = @"href=\"(.*?)/?mov";
+			regex = [NSRegularExpression regularExpressionWithPattern:pattern
+															  options:NSRegularExpressionCaseInsensitive
+																error:nil];
+			matches = [regex matchesInString:webDataString
+									 options:0
+									   range:NSMakeRange(0, [webDataString length])];
+			[self.linksListTextView insertText:@"\n\nVideo List"];
+			for (NSTextCheckingResult *match in matches) {
+				foundURL = YES;
+				NSRange range = [match rangeAtIndex:1];
+				NSString *aURLString = [webDataString substringWithRange:range];
+				[self.linksListTextView insertText:[@"\n" stringByAppendingString:[aURLString stringByAppendingString:@"mov"]]];
+			}
+			
+			pattern = @"href=\"(.*?)/?pdf";
+			regex = [NSRegularExpression regularExpressionWithPattern:pattern
+															  options:NSRegularExpressionCaseInsensitive
+																error:nil];
+			matches = [regex matchesInString:webDataString
+									 options:0
+									   range:NSMakeRange(0, [webDataString length])];
+			[self.linksListTextView insertText:@"\n\nPDF List"];
+			for (NSTextCheckingResult *match in matches) {
+				foundURL = YES;
+				NSRange range = [match rangeAtIndex:1];
+				NSString *aURLString = [webDataString substringWithRange:range];
+				[self.linksListTextView insertText:[@"\n" stringByAppendingString:[aURLString stringByAppendingString:@"pdf"]]];
+			}
 		}
 	}
 }
