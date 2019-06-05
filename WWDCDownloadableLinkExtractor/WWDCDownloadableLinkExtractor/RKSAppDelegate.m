@@ -45,77 +45,83 @@
 		self.loadingIndicator.hidden = NO;
 		[self.loadingIndicator startAnimation:nil];
 		
+        NSURL *url = [NSURL URLWithString:aWeakSelf.urlTextField.stringValue];
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-			NSURL *url = [NSURL URLWithString:aWeakSelf.urlTextField.stringValue];
 			NSString *webDataString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
 			
-            [aWeakSelf wwdc2015_2016DeveloperURLsFromWebsiteString:webDataString withCompletionBlock:^(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList) {
-                if (hdVideoList.count > 0 || sdVideoList.count > 0 || pdfList.count > 0) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // Now Loop through all the list and print them in the text view
-                        if (hdVideoList.count > 0) {
-                            [aWeakSelf.linksListTextView insertText:@"\n\nHD List"];
-                            for (NSString* aLink in hdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                        }
-                        if (sdVideoList.count > 0) {
-                            [aWeakSelf.linksListTextView insertText:@"\n\nSD List"];
-                            for (NSString* aLink in sdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                        }
-                        if (pdfList.count > 0) {
-                            [aWeakSelf.linksListTextView insertText:@"\n\nPDF List"];
-                            for (NSString* aLink in pdfList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                        }
-                        
-                        self.loadingIndicator.hidden = YES;
-                        [self.loadingIndicator stopAnimation:nil];
-                    });
-                } else {
-                    [aWeakSelf wwdc2014DeveloperURLsFromWebsiteString:webDataString withCompletionBlock:^(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList) {
-                        if (hdVideoList.count > 0 || sdVideoList.count > 0 || pdfList.count > 0) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                // Now Loop through all the list and print them in the text view
-                                [aWeakSelf.linksListTextView insertText:@"\n\nHD List"];
-                                for (NSString* aLink in hdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                                [aWeakSelf.linksListTextView insertText:@"\n\nSD List"];
-                                for (NSString* aLink in sdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                                [aWeakSelf.linksListTextView insertText:@"\n\nPDF List"];
-                                for (NSString* aLink in pdfList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
-                                
-                                self.loadingIndicator.hidden = YES;
-                                [self.loadingIndicator stopAnimation:nil];
-                            });
-                        } else {
-                            [aWeakSelf wwdc2013DeveloperURLsFromWebsiteString:webDataString withCompletionBlock:^(NSArray *videoList, NSArray *pdfList) {
-                                if (videoList.count > 0 || pdfList.count > 0) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        if (videoList.count > 0) {
-                                            [aWeakSelf.linksListTextView insertText:@"\n\nVideo List\n"];
-                                            [aWeakSelf.linksListTextView insertText:[videoList componentsJoinedByString:@"\n"]];
-                                        }
-                                        if (pdfList.count > 0) {
-                                            [aWeakSelf.linksListTextView insertText:@"\n\nPDF List\n"];
-                                            [aWeakSelf.linksListTextView insertText:[pdfList componentsJoinedByString:@"\n"]];
-                                        }
-                                        self.loadingIndicator.hidden = YES;
-                                        [self.loadingIndicator stopAnimation:nil];
-                                    });
-                                }
-                            }];
-                        }
-                    }];
-                }
-            }];
+            
+            [aWeakSelf
+             wwdcDownloadURLsFromString:webDataString
+             fromURL:url.absoluteString
+             withCompletionBlock:^(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList) {
+                 if (hdVideoList.count > 0 || sdVideoList.count > 0 || pdfList.count > 0) {
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         // Now Loop through all the list and print them in the text view
+                         if (hdVideoList.count > 0) {
+                             [aWeakSelf.linksListTextView insertText:@"\n\nHD List"];
+                             for (NSString* aLink in hdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                         }
+                         if (sdVideoList.count > 0) {
+                             [aWeakSelf.linksListTextView insertText:@"\n\nSD List"];
+                             for (NSString* aLink in sdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                         }
+                         if (pdfList.count > 0) {
+                             [aWeakSelf.linksListTextView insertText:@"\n\nPDF List"];
+                             for (NSString* aLink in pdfList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                         }
+                         
+                         self.loadingIndicator.hidden = YES;
+                         [self.loadingIndicator stopAnimation:nil];
+                     });
+                 } else {
+                     [aWeakSelf wwdc2014DeveloperURLsFromWebsiteString:webDataString withCompletionBlock:^(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList) {
+                         if (hdVideoList.count > 0 || sdVideoList.count > 0 || pdfList.count > 0) {
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 // Now Loop through all the list and print them in the text view
+                                 [aWeakSelf.linksListTextView insertText:@"\n\nHD List"];
+                                 for (NSString* aLink in hdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                                 [aWeakSelf.linksListTextView insertText:@"\n\nSD List"];
+                                 for (NSString* aLink in sdVideoList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                                 [aWeakSelf.linksListTextView insertText:@"\n\nPDF List"];
+                                 for (NSString* aLink in pdfList) { [aWeakSelf.linksListTextView insertText:[@"\n" stringByAppendingString:aLink]]; }
+                                 
+                                 self.loadingIndicator.hidden = YES;
+                                 [self.loadingIndicator stopAnimation:nil];
+                             });
+                         } else {
+                             [aWeakSelf wwdc2013DeveloperURLsFromWebsiteString:webDataString withCompletionBlock:^(NSArray *videoList, NSArray *pdfList) {
+                                 if (videoList.count > 0 || pdfList.count > 0) {
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         if (videoList.count > 0) {
+                                             [aWeakSelf.linksListTextView insertText:@"\n\nVideo List\n"];
+                                             [aWeakSelf.linksListTextView insertText:[videoList componentsJoinedByString:@"\n"]];
+                                         }
+                                         if (pdfList.count > 0) {
+                                             [aWeakSelf.linksListTextView insertText:@"\n\nPDF List\n"];
+                                             [aWeakSelf.linksListTextView insertText:[pdfList componentsJoinedByString:@"\n"]];
+                                         }
+                                         self.loadingIndicator.hidden = YES;
+                                         [self.loadingIndicator stopAnimation:nil];
+                                     });
+                                 }
+                             }];
+                         }
+                     }];
+                 }
+             }];
 		});
 	}
 }
 
+// https://developer.apple.com/videos/wwdc2019/
+// https://developer.apple.com/videos/wwdc2018/
+// https://developer.apple.com/videos/wwdc2017/
 // https://developer.apple.com/videos/wwdc2016/
 // https://developer.apple.com/videos/wwdc2015/
-// https://developer.apple.com/videos/wwdc2014/
-// https://developer.apple.com/videos/wwdc2013/
-- (void) wwdc2015_2016DeveloperURLsFromWebsiteString:(NSString *) websiteString withCompletionBlock:(void (^)(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList))block {
-    __weak RKSAppDelegate *aWeakSelf = self;
-    NSMutableArray *allComponents = [[websiteString componentsSeparatedByString:@"<a href=\"/videos"] mutableCopy];
+- (void) wwdcDownloadURLsFromString:(NSString *) websiteString
+                            fromURL:(NSString *) urlOfPage
+                withCompletionBlock:(void (^)(NSArray *hdVideoList, NSArray *sdVideoList, NSArray *pdfList))block {
+    NSMutableArray *allComponents = [[websiteString componentsSeparatedByString:@"<a href=\"/videos/play/wwdc"] mutableCopy];
     if (allComponents > 0) {
         [allComponents removeObjectAtIndex:0];
         [allComponents removeObjectAtIndex:0];
@@ -132,7 +138,7 @@
         
         if (anID.length > 0) {
             // Now go this page to find the download link
-            NSString *currentSessionURLString = [NSString stringWithFormat:@"%@?/videos%@", aWeakSelf.urlTextField.stringValue, anID];
+            NSString *currentSessionURLString = [NSString stringWithFormat:@"%@?/videos/play/wwdc%@", urlOfPage, anID];
             NSString *webDataString = [NSString stringWithContentsOfURL:[NSURL URLWithString:currentSessionURLString]
                                                                encoding:NSUTF8StringEncoding error:nil];
             
